@@ -1,4 +1,4 @@
-package ru.an.scg.menu;
+package ru.an.scg.ui.console_menu;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,15 +6,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Menu implements IMenu {
-    private final List<IMenu> items = new ArrayList<>();
+public class Menu implements MenuComposite {
+    private final List<MenuComposite> items = new ArrayList<>();
     private String name = "";
     public Menu() {}
     public Menu(String name) {
         this.name = name;
     }
 
-    public void addItem(IMenu item) {
+    public void addItem(MenuComposite item) {
         this.items.add(item);
     }
 

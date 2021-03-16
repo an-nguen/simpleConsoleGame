@@ -1,10 +1,10 @@
-package ru.an.scg.menu;
+package ru.an.scg.ui.console_menu;
 
-public class MenuComponent implements IMenu {
-    private IFunctional func;
+public class MenuComponent implements MenuComposite {
+    private Runnable func;
     private String name;
 
-    public MenuComponent(IFunctional func, String name) {
+    public MenuComponent(Runnable func, String name) {
         this.func = func;
         this.name = name;
     }

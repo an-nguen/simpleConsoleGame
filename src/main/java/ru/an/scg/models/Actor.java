@@ -1,11 +1,16 @@
 package ru.an.scg.models;
 
 public class Actor extends LivingObject {
-
+    private double experiencePoints;
     public Actor() {}
 
     @Override
-    public void talk(IGameObject target) {
+    public void onAfterAttack() {
+
+    }
+
+    @Override
+    public void talk(GameObject target) {
 
     }
 
@@ -20,5 +25,13 @@ public class Actor extends LivingObject {
                 "health=" + health +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public void setExperiencePoints(double ep) {
+        this.experiencePoints = ep;
+    }
+
+    public double getExperiencePoints() {
+        return experiencePoints;
     }
 }

@@ -7,7 +7,7 @@ import java.util.Random;
 public class AttackCommand extends Command {
     private final LivingObject actor;
     private final LivingObject target;
-    private int hpValue;
+    private double hpValue;
 
     public AttackCommand(LivingObject actor, LivingObject target) {
         this.actor = actor;
@@ -16,9 +16,10 @@ public class AttackCommand extends Command {
 
     @Override
     public boolean execute() {
-        this.hpValue = ((actor.getStrengthPoints() / 2) + actor.getBaseDamage()) * (isMissed(target) ? 0 : 1);
+        var rng = new Random();
+        this.hpValue = (((float)actor.getStrengthPoints() / 2) * rng.doubles(1, (float)actor.getStrengthPoints()).findFirst().getAsDouble() + actor.getBaseDamage()) * (isMissed(target) ? 0 : 1);
         target.setHealth(target.getHealth() - this.hpValue);
-        System.out.printf("%s (%d/%d) attacks %s(%d/%d) -> -%d HP\n",
+        System.out.printf("%s (%f/%d) attacks %s(%f/%d) -> -%f HP\n",
                 actor.getName(), actor.getHealth(), actor.getMaxHealth(),
                 target.getName(), target.getHealth(), target.getMaxHealth(),
                 hpValue);

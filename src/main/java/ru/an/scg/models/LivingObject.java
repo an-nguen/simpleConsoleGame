@@ -5,11 +5,12 @@ import ru.an.scg.commands.Command;
 
 import java.util.Stack;
 
-public abstract class LivingObject implements IGameObject {
-    protected int health;
+public abstract class LivingObject implements GameObject {
+    protected double health;
     protected String name;
     protected final Stack<Command> commandHistory = new Stack<>();
-
+    protected double expPointsAfterDead = 1;
+    protected LivingObjectStates state;
     // damage = BASE_DAMAGE + (strengthPoints / 2)
     protected int strengthPoints = 10;
     // Miss chance
@@ -32,9 +33,21 @@ public abstract class LivingObject implements IGameObject {
         var command = new AttackCommand(this, target);
         commandHistory.push(command);
         command.execute();
+        target.checkState();
+        target.onAfterAttack();
     }
-    public abstract void talk(IGameObject target);
 
+    public abstract void onAfterAttack();
+
+    public LivingObjectStates getState() {
+        return state;
+    }
+
+    public void checkState() {
+        state = (health < 0) ? LivingObjectStates.DEAD : LivingObjectStates.LIVE;
+    }
+
+    public abstract void talk(GameObject target);
 
     @Override
     public String getName() {
@@ -88,17 +101,25 @@ public abstract class LivingObject implements IGameObject {
         return endurancePoints;
     }
 
+    public double getExpPointsAfterDead() {
+        return expPointsAfterDead;
+    }
+
+    public void setExpPointsAfterDead(double expPointsAfterDead) {
+        this.expPointsAfterDead = expPointsAfterDead;
+    }
+
     public Stack<Command> getCommandHistory() {
         return commandHistory;
     }
 
     @Override
-    public int getHealth() {
+    public double getHealth() {
         return this.health;
     }
 
     @Override
-    public void setHealth(int v) {
+    public void setHealth(double v) {
         this.health = v;
     }
 

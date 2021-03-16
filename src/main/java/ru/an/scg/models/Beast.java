@@ -2,7 +2,12 @@ package ru.an.scg.models;
 
 public class Beast extends LivingObject{
     @Override
-    public void talk(IGameObject target) {
+    public void onAfterAttack() {
+
+    }
+
+    @Override
+    public void talk(GameObject target) {
 
     }
 
