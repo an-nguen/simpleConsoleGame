@@ -33,7 +33,7 @@ public abstract class LivingObject implements GameObject {
         var command = new AttackCommand(this, target);
         commandHistory.push(command);
         command.execute();
-        target.checkState();
+        target.updateState();
         target.onAfterAttack();
     }
 
@@ -43,7 +43,7 @@ public abstract class LivingObject implements GameObject {
         return state;
     }
 
-    public void checkState() {
+    public void updateState() {
         state = (health < 0) ? LivingObjectStates.DEAD : LivingObjectStates.LIVE;
     }
 

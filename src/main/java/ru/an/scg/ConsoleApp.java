@@ -1,30 +1,42 @@
 package ru.an.scg;
 
+import ru.an.scg.models.*;
 import ru.an.scg.ui.console_menu.Menu;
 import ru.an.scg.ui.console_menu.MenuComponent;
-import ru.an.scg.models.Actor;
-import ru.an.scg.models.Beast;
-import ru.an.scg.models.LivingObjectStates;
+
+import java.util.HashSet;
 
 public class ConsoleApp implements GameApplication {
-    public static Menu buildGameMenu() {
-        var player = new Actor("an", 100);
-        var beast = new Beast("beast");
+    private Scene mainScene;
+    private Actor player;
+
+    public Menu buildGameMenu() {
         var gameMenu = new Menu();
         gameMenu.addItem(new MenuComponent(() -> {
-            player.attack(beast);
-            if (beast.getState() == LivingObjectStates.DEAD) {
-                beast.setHealth(beast.getMaxHealth());
-                player.setExperiencePoints(player.getExperiencePoints());
-            }
+            var selectTargetMenu = new Menu();
+            for (var target : mainScene.getGameObjectSet()) {
+                selectTargetMenu.addItem(new MenuComponent(() -> {
+                    player.attack((LivingObject) target);
+                    if (((LivingObject) target).getState() == LivingObjectStates.DEAD) {
+                        player.setExperiencePoints(player.getExperiencePoints() + ((LivingObject) target).getExpPointsAfterDead());
+                        this.mainScene.getGameObjectSet().remove(target);
+                        gameMenu.run();
+                    } else {
+                        ((LivingObject) target).attack(player);
 
-            beast.attack(player);
-            if (player.getState() == LivingObjectStates.DEAD) {
-                player.setHealth(player.getMaxHealth());
-                player.setExperiencePoints(player.getExperiencePoints() / 2);
+                        if (player.getState() == LivingObjectStates.DEAD) {
+                            ((LivingObject) target).setExpPointsAfterDead(((LivingObject) target).getExpPointsAfterDead() + player.getExperiencePoints());
+                            System.out.println("You dead!");
+                            buildMainMenu().run();
+                        } else {
+                            gameMenu.run();
+                        }
+                    }
+                }, target.getName()));
             }
-            gameMenu.run();
-        }, "Attack monster"));
+            selectTargetMenu.addItem(new MenuComponent(gameMenu::run, "Back"));
+            selectTargetMenu.run();
+        }, "Attack"));
         gameMenu.addItem(new MenuComponent(() -> {
             player.getCommandHistory().forEach(c -> {
                 System.out.println(c.toString());
@@ -35,13 +47,28 @@ public class ConsoleApp implements GameApplication {
             System.out.println(player.toString());
             gameMenu.run();
         }, "Player info"));
+        gameMenu.addItem(new MenuComponent(() -> {
+            buildMainMenu().run();
+        }, "Back"));
         return gameMenu;
+    }
+
+    private HashSet<GameObject> getGameObjects() {
+        var objs = new HashSet<GameObject>();
+        objs.add(new Beast("test_beast1"));
+        objs.add(new Beast("test_beast2"));
+        objs.add(new Beast("test_beast3"));
+        return objs;
     }
 
     public Menu buildMainMenu() {
         var mainMenu = new Menu("Main menu");
         mainMenu.addItem(new MenuComponent(() -> {
-
+            mainScene = new Scene();
+            player = new Actor("an", 100);
+            mainScene.getGameObjectSet().add(player);
+            mainScene.getGameObjectSet().addAll(getGameObjects());
+            buildGameMenu().run();
         }, "Start game"));
         mainMenu.addItem(new MenuComponent(() -> {
 
