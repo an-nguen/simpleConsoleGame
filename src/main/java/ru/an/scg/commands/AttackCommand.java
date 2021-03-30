@@ -15,7 +15,7 @@ public class AttackCommand extends Command {
     }
 
     @Override
-    public boolean execute() {
+    public void execute() {
         var rng = new Random();
         this.hpValue = (((float)actor.getStrengthPoints() / 2) * rng.doubles(1, (float)actor.getStrengthPoints()).findFirst().getAsDouble() + actor.getBaseDamage()) * (isMissed(target) ? 0 : 1);
         target.setHealth(target.getHealth() - this.hpValue);
@@ -23,7 +23,6 @@ public class AttackCommand extends Command {
                 actor.getName(), actor.getHealth(), actor.getMaxHealth(),
                 target.getName(), target.getHealth(), target.getMaxHealth(),
                 hpValue);
-        return true;
     }
 
     private boolean isMissed(LivingObject o) {

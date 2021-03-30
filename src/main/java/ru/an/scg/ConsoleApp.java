@@ -38,18 +38,14 @@ public class ConsoleApp implements GameApplication {
             selectTargetMenu.run();
         }, "Attack"));
         gameMenu.addItem(new MenuComponent(() -> {
-            player.getCommandHistory().forEach(c -> {
-                System.out.println(c.toString());
-            });
+            player.getCommandHistory().forEach(c -> System.out.println(c.toString()));
             gameMenu.run();
         }, "History"));
         gameMenu.addItem(new MenuComponent(() -> {
             System.out.println(player.toString());
             gameMenu.run();
         }, "Player info"));
-        gameMenu.addItem(new MenuComponent(() -> {
-            buildMainMenu().run();
-        }, "Back"));
+        gameMenu.addItem(new MenuComponent(() -> buildMainMenu().run(), "Back"));
         return gameMenu;
     }
 
